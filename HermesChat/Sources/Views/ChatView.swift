@@ -4,13 +4,13 @@ import SwiftUI
 
 struct ChatView: View {
     
-@StateObject private var viewModel = ChatViewModel()
+    @StateObject private var viewModel = ChatViewModel()
     @State private var inputText: String = ""
     @FocusState private var isInputFocused: Bool
     
     var body: some View {
         //        ZStack(alignment: .bottom) {
-        VStack(spacing: 0) {
+        VStack(alignment: .center, spacing: 0) {
             // Top toolbar
             // toolbar
             
@@ -22,14 +22,17 @@ struct ChatView: View {
             ) { prompt in
                 Task { await viewModel.send(prompt) }
             }
+            .frame(maxWidth: 720)
+            .padding(.horizontal, 15)
             
-            // Message list + safe area input
-//            if !viewModel.messages.isEmpty {
+            // Message list appears when there are messages or streaming content and sits directly below the input
+            if !viewModel.messages.isEmpty || !viewModel.liveContent.isEmpty {
                 conversationContent
-//            }
+                    .frame(maxWidth: 720, maxHeight: .infinity)
+                    .padding(.horizontal, 15)
+            }
         }
         .environmentObject(viewModel)
-        .frame(maxHeight: .infinity, alignment: .bottom)
         //        }
         //        .background(.thickMaterial)
         //        .overlay {
@@ -37,17 +40,17 @@ struct ChatView: View {
         //                .stroke(.secondary.opacity(0.5), lineWidth: 1.0)
         //        }
         //        .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
-        //        .task {
-        //            #if DEBUG
-        //            if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" {
-        //                await viewModel.connect()
-        //            } else {
-        //                viewModel.statusText = "Preview mode"
-        //            }
-        //            #else
-        //            await viewModel.connect()
-        //            #endif
-        //        }
+        .task {
+#if DEBUG
+            if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" {
+                await viewModel.connect()
+            } else {
+                viewModel.statusText = "Preview mode"
+            }
+#else
+            await viewModel.connect()
+#endif
+        }
         .environmentObject(viewModel)
     }
     
@@ -131,58 +134,59 @@ struct ChatView: View {
     // MARK: - Conversation Content
     
     private var conversationContent: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(spacing: 15) {
-                    ForEach(viewModel.messages) { message in
-                        HermesMessageView(message: message)
-                    }
-                    
-                    // Live streaming assistant bubble
-                    if viewModel.loadingState.isLoading, let last = viewModel.messages.last, last.role == .user {
-                        HermesMessageView(
-                            message: ChatMessage(role: .assistant, content: ""),
-                            isStreaming: true
-                        )
-                    }
-                }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
+        VStack(alignment: .leading, spacing: 12) {
+            // Last assistant response or streaming content
+            if let last = viewModel.messages.last(where: { $0.role == .assistant }) {
+                Text(last.content)
+                    .font(.system(size: 14))
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.leading)
+                    .padding()
+                    .frame(maxWidth: 720, alignment: .leading)
+                    .background(.thickMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            } else if !viewModel.liveContent.isEmpty {
+                // Show streaming assistant text while response is in progress
+                Text(viewModel.liveContent)
+                    .font(.system(size: 14))
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.leading)
+                    .padding()
+                    .frame(maxWidth: 720, alignment: .leading)
+                    .background(.thickMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             }
-            .overlay {
-                if viewModel.messages.isEmpty {
-                    ZStack {
-                        Image(systemName: "brain.head.profile")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(.tertiary)
-                            .frame(width: 45, height: 45)
-                    }
-                    .frame(maxHeight: .infinity, alignment: .center)
-                }
+            
+            // Status indicators
+            if let status = viewModel.currentStatus {
+                Text(status)
+                    .font(.caption)
+                    .foregroundColor(.secondary.opacity(0.7))
+                    .padding(.horizontal)
+                    .frame(maxWidth: 720, alignment: .leading)
             }
-            .contentMargins(.bottom, -40, for: .scrollContent)
-            .scrollIndicators(.hidden)
-            //            .safeAreaInset(edge: .bottom) {
-            //                InputBarView(
-            //                    text: $inputText,
-            //                    isLoading: viewModel.loadingState.isLoading,
-            //                    chatMode: viewModel.chatMode
-            //                ) { prompt in
-            //                    Task { await viewModel.send(prompt) }
-            //                }
-            //            }
-            .defaultScrollAnchor(.bottom)
-            .onChange(of: viewModel.messages.count) {
-                if let last = viewModel.messages.last {
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        proxy.scrollTo(last.id, anchor: .bottom)
+            
+            // Loading dots
+            if viewModel.loadingState.isLoading {
+                HStack(spacing: 4) {
+                    ForEach(0..<3, id: \.self) { i in
+                        Circle()
+                            .fill(Color.accentColor)
+                            .frame(width: 6, height: 6)
+                            .animation(
+                                .easeInOut(duration: 0.6)
+                                .repeatForever()
+                                .delay(Double(i) * 0.15),
+                                value: viewModel.loadingState.isLoading
+                            )
                     }
                 }
+                .padding(.horizontal)
+                .frame(maxWidth: 720, alignment: .leading)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: 720, maxHeight: .infinity, alignment: .topLeading)
+        .padding(.top, 8)
     }
 }
 
@@ -193,7 +197,7 @@ struct InputBarView: View {
     let isLoading: Bool
     let chatMode: ChatMode
     let onSubmit: (String) -> Void
-
+    
     @EnvironmentObject private var viewModel: ChatViewModel
     @FocusState private var isFocused: Bool
     
@@ -205,9 +209,6 @@ struct InputBarView: View {
                     Circle()
                         .fill(viewModel.isConnected ? Color.green : Color.orange)
                         .frame(width: 7, height: 7)
-//                    Text(viewModel.statusText)
-//                        .font(.system(size: 11))
-//                        .foregroundColor(.secondary)
                 }
                 
                 Spacer()
@@ -233,80 +234,24 @@ struct InputBarView: View {
             }
             .frame(height: 50)
         }
-//        .padding(.top, 10)
+        //        .padding(.top, 10)
         .padding(.horizontal)
-//                .padding(.vertical, 7)
+        //                .padding(.vertical, 7)
         .background(.thickMaterial)
         .overlay {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .stroke(.secondary.opacity(0.5), lineWidth: 1.0)
         }
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .padding([.bottom, .horizontal], 15)
-        .padding(.top, 5)
+//        .padding([.bottom, .horizontal], 15)
+//        .padding(.top, 5)
     }
     
     private func submit() {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        text = ""
+        // Prompt persists in input until user clears it
         onSubmit(trimmed)
     }
 }
 
-
-// MARK: - Message View
-
-struct HermesMessageView: View {
-    let message: ChatMessage
-    var isStreaming: Bool = false
-    
-    var body: some View {
-        ZStack(alignment: message.role == .user ? .trailing : .leading) {
-            if message.role == .user {
-                Text(message.content)
-                    .font(.system(size: 14))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .background(Color.accentColor)
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            } else {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(message.content.isEmpty ? "…" : message.content)
-                        .font(.system(size: 14))
-                        .foregroundColor(.primary)
-                        .multilineTextAlignment(.leading)
-                    
-                    if isStreaming {
-                        HStack(spacing: 4) {
-                            ForEach(0..<3, id: \.self) { i in
-                                Circle()
-                                    .fill(Color.accentColor.opacity(0.6))
-                                    .frame(width: 5, height: 5)
-                                    .opacity(0.6)
-                                    .animation(
-                                        .easeInOut(duration: 0.6)
-                                        .repeatForever()
-                                        .delay(Double(i) * 0.15),
-                                        value: isStreaming
-                                    )
-                            }
-                        }
-                        .padding(.top, 2)
-                    }
-                }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .frame(
-                    maxWidth: .infinity,
-                    minHeight: 36,
-                    alignment: .leading
-                )
-                .background(Color(nsColor: .textBackgroundColor).opacity(0.8))
-                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: message.role == .user ? .trailing : .leading)
-    }
-}

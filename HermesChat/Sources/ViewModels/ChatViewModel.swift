@@ -11,7 +11,7 @@ public final class ChatViewModel: ObservableObject {
 
     // MARK: - Live Streaming State (transient, not in messages until finalized)
     // Non-published: update only when finalizing or explicitly published
-    public var liveContent: String = ""
+    @Published public var liveContent: String = ""
     public var liveThinking: String?
     public var liveToolName: String?
     public var liveToolSummary: String?
@@ -25,6 +25,9 @@ public final class ChatViewModel: ObservableObject {
         didSet { resetConversation() }
     }
 
+    // Push-style synthesized status for UI
+    @Published public var currentStatus: String? = nil
+
     // MARK: - Private
     private var isGenerating = false
 
@@ -37,7 +40,8 @@ public final class ChatViewModel: ObservableObject {
     public func connect() async {
         do {
             try await GatewayClient.shared.start()
-            _ = try await GatewayClient.shared.createSession()
+            let session = try await GatewayClient.shared.createSession()
+            currentSessionId = session.sessionId
             statusText = "Connected"
             isConnected = true
 
@@ -47,16 +51,13 @@ public final class ChatViewModel: ObservableObject {
                 }
             }
 
-            messages = [
-                ChatMessage(
-                    role: .assistant,
-                    content: "Hermes is ready. Ask me anything.",
-                    timestamp: Date()
-                )
-            ]
+            // Start with no messages. Message view should only show assistant responses to prompts.
+            messages = []
+            refreshCurrentStatus()
         } catch {
             statusText = "Gateway error: \(error.localizedDescription)"
             loadingState = .error(error.localizedDescription)
+            refreshCurrentStatus()
         }
     }
 
@@ -64,6 +65,7 @@ public final class ChatViewModel: ObservableObject {
         GatewayClient.shared.stop()
         isConnected = false
         currentSessionId = nil
+        refreshCurrentStatus()
     }
 
     // MARK: - Send Message
@@ -72,12 +74,8 @@ public final class ChatViewModel: ObservableObject {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         guard isConnected, let sessionId = currentSessionId else { return }
 
-        // Append user message
-        messages.append(ChatMessage(
-            role: .user,
-            content: text,
-            timestamp: Date()
-        ))
+        // Clear previous assistant response — message view should only show the current assistant response
+        messages = []
 
         // Reset live state
         liveContent = ""
@@ -86,6 +84,7 @@ public final class ChatViewModel: ObservableObject {
         liveToolSummary = nil
         loadingState = .loading
         isGenerating = true
+        refreshCurrentStatus()
 
         // Build prompt
         var prompt = text
@@ -119,11 +118,12 @@ public final class ChatViewModel: ObservableObject {
 
         // Finalize any live content
         if !liveContent.isEmpty {
-            messages.append(ChatMessage(
+            // Replace any previous content with the finalized assistant response
+            messages = [ChatMessage(
                 role: .assistant,
                 content: liveContent,
                 timestamp: Date()
-            ))
+            )]
         }
 
         // Clear live state
@@ -133,12 +133,17 @@ public final class ChatViewModel: ObservableObject {
         liveToolSummary = nil
 
         try? await GatewayClient.shared.interrupt(sessionId: sessionId)
+        refreshCurrentStatus()
     }
 
     // MARK: - Event Handling
 
     private func handleEvent(_ event: GatewayEvent) {
         switch event {
+        case .messageDelta(let text):
+            // Append streaming assistant text to liveContent so the UI can show it
+            liveContent += text
+            return
         case .thinkingDelta(let text):
             liveThinking = text
             // Also append to liveContent so nothing is lost
@@ -185,35 +190,83 @@ public final class ChatViewModel: ObservableObject {
             // Treat as a final message
             finalizeResponse("Error: \(msg)")
         }
+
+        // refresh synthesized status whenever events mutate state
+        refreshCurrentStatus()
     }
 
     // Called by external monitor when response is fully done
     public func finalizeResponse(_ finalContent: String) {
-        messages.append(ChatMessage(
-            role: .assistant,
-            content: finalContent,
-            timestamp: Date()
-        ))
+        // Replace any previous messages with the single assistant response
+        messages = [
+            ChatMessage(
+                role: .assistant,
+                content: finalContent,
+                timestamp: Date()
+            )
+        ]
         liveContent = ""
         liveThinking = nil
         liveToolName = nil
         liveToolSummary = nil
         loadingState = .idle
         isGenerating = false
+        refreshCurrentStatus()
     }
 
     private func handleError(_ error: Error) {
-        messages.append(ChatMessage(
-            role: .assistant,
-            content: "Error: \(error.localizedDescription)",
-            timestamp: Date()
-        ))
+        // Replace messages with the error message only
+        messages = [
+            ChatMessage(
+                role: .assistant,
+                content: "Error: \(error.localizedDescription)",
+                timestamp: Date()
+            )
+        ]
         liveContent = ""
         liveThinking = nil
         liveToolName = nil
         liveToolSummary = nil
         loadingState = .error(error.localizedDescription)
         isGenerating = false
+        refreshCurrentStatus()
+    }
+
+   // MARK: - Helpers
+
+    private func refreshCurrentStatus() {
+       // Prefer live thinking stream
+        if let thinking = liveThinking, !thinking.isEmpty {
+            currentStatus = thinking
+            return
+        }
+
+        // Tool activity
+        if let tool = liveToolName {
+            if let summary = liveToolSummary, !summary.isEmpty {
+                currentStatus = "\(tool): \(summary)"
+                return
+            }
+            currentStatus = "Running: \(tool)"
+            return
+        }
+
+        // Loading error
+        switch loadingState {
+        case .error(let msg):
+            currentStatus = "Error: \(msg)"
+            return
+        default:
+            break
+        }
+
+        // General status text (connection, etc.)
+        if !statusText.isEmpty {
+            currentStatus = statusText
+            return
+        }
+
+        currentStatus = nil
     }
 
     private var currentSessionId: String?
@@ -234,13 +287,8 @@ public final class ChatViewModel: ObservableObject {
                 do {
                     let result = try await GatewayClient.shared.createSession()
                     currentSessionId = result.sessionId
-                    messages = [
-                        ChatMessage(
-                            role: .assistant,
-                            content: "Mode switched to \(chatMode.rawValue). Ready.",
-                            timestamp: Date()
-                        )
-                    ]
+                    // Keep message view empty on mode switch; only assistant responses to user prompts should appear.
+                    messages = []
                 } catch {
                     handleError(error)
                 }
