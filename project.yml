@@ -34,6 +34,14 @@ schemes:
     archive:
       config: Release
 
+packages:
+  KeyboardShortcuts:
+    url: https://github.com/sindresorhus/KeyboardShortcuts
+    from: 2.0.0
+  MarkdownView:
+    url: https://github.com/LiYanan2004/MarkdownView.git
+    revision: 31e52d2
+
 targets:
   HermesChat:
     type: application
@@ -41,6 +49,9 @@ targets:
     sources:
       - path: HermesChat/Sources
       - path: HermesChat/Resources
+    dependencies:
+      - package: KeyboardShortcuts
+      - package: MarkdownView
     settings:
       base:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon

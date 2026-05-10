@@ -1,4 +1,5 @@
 import SwiftUI
+import MarkdownView
 
 // MARK: - Chat View (Root)
 
@@ -137,20 +138,16 @@ struct ChatView: View {
         VStack(alignment: .leading, spacing: 12) {
             // Last assistant response or streaming content
             if let last = viewModel.messages.last(where: { $0.role == .assistant }) {
-                Text(last.content)
-                    .font(.system(size: 14))
-                    .foregroundColor(.primary)
-                    .multilineTextAlignment(.leading)
+                MarkdownView(last.content)
+                    .textSelection(.enabled)
                     .padding()
                     .frame(maxWidth: 720, alignment: .leading)
                     .background(.thickMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             } else if !viewModel.liveContent.isEmpty {
                 // Show streaming assistant text while response is in progress
-                Text(viewModel.liveContent)
-                    .font(.system(size: 14))
-                    .foregroundColor(.primary)
-                    .multilineTextAlignment(.leading)
+                MarkdownView(viewModel.liveContent)
+                    .textSelection(.enabled)
                     .padding()
                     .frame(maxWidth: 720, alignment: .leading)
                     .background(.thickMaterial)

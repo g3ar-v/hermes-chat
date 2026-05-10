@@ -1,4 +1,5 @@
 @preconcurrency import AppKit
+import KeyboardShortcuts
 import SwiftUI
 
 // MARK: - Floating Panel
@@ -124,17 +125,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func registerGlobalHotkey() {
-        // Option+Command+L to toggle
-        NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            let hasCommand = event.modifierFlags.contains(.command)
-            let hasOption = event.modifierFlags.contains(.option)
-            let isLKey = event.keyCode == 37  // 'L' key
-
-            if hasCommand && hasOption && isLKey {
-                DispatchQueue.main.async { [weak self] in
-                    self?.togglePanel()
-                }
-            }
+        KeyboardShortcuts.onKeyUp(for: .togglePanel) { [weak self] in
+            self?.togglePanel()
         }
     }
 }
