@@ -39,8 +39,8 @@ packages:
     url: https://github.com/sindresorhus/KeyboardShortcuts
     from: 2.0.0
   MarkdownView:
-    url: https://github.com/cyrilzakka/MarkdownView.git
-    branch: main
+    url: https://github.com/LiYanan2004/MarkdownView.git
+    revision: 31e52d2
 
 targets:
   HermesChat:

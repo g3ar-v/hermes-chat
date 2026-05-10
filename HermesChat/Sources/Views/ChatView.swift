@@ -138,8 +138,7 @@ struct ChatView: View {
         VStack(alignment: .leading, spacing: 12) {
             // Last assistant response or streaming content
             if let last = viewModel.messages.last(where: { $0.role == .assistant }) {
-                MarkdownView(text: last.content)
-                    .markdownRenderingThread(.background)
+                MarkdownView(last.content)
                     .textSelection(.enabled)
                     .padding()
                     .frame(maxWidth: 720, alignment: .leading)
@@ -147,8 +146,7 @@ struct ChatView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             } else if !viewModel.liveContent.isEmpty {
                 // Show streaming assistant text while response is in progress
-                MarkdownView(text: viewModel.liveContent)
-                    .markdownRenderingThread(.background)
+                MarkdownView(viewModel.liveContent)
                     .textSelection(.enabled)
                     .padding()
                     .frame(maxWidth: 720, alignment: .leading)
