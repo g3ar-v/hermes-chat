@@ -64,7 +64,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func createPanel() {
         let chatView = ChatView()
             .frame(minWidth: 400, idealWidth: 450, maxWidth: 600)
-            .frame(minHeight: 300, idealHeight: 480)
+            .fixedSize(horizontal: true, vertical: true)
 
         panel = FloatingPanel(
             contentRect: NSRect(x: 0, y: 0, width: 480, height: 480),

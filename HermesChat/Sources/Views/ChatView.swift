@@ -26,13 +26,11 @@ struct ChatView: View {
             .frame(maxWidth: 720)
             .padding(.horizontal, 15)
             
-            // Message list appears when there are messages or streaming content, wrapped in ScrollView
+            // Message list appears when there are messages or streaming content
             if !viewModel.messages.isEmpty || !viewModel.liveContent.isEmpty {
-                ScrollView {
-                    conversationContent
-                        .padding(.horizontal, 15)
-                }
-                .frame(maxHeight: .infinity)
+                conversationContent
+                    .frame(maxWidth: 720)
+                    .padding(.horizontal, 15)
             }
         }
         .environmentObject(viewModel)
