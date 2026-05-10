@@ -1,8 +1,6 @@
-import Foundation
-import Combine
-
 // MARK: - Chat View Model
 import Combine
+import Foundation
 
 @MainActor
 public final class ChatViewModel: ObservableObject {
@@ -92,12 +90,12 @@ public final class ChatViewModel: ObservableObject {
             do {
                 if let context = try await HonchoMemoryService.shared.fetchContext() {
                     prompt = """
-                    [CONTEXT FROM MEMORY]
-                    \(context)
+                        [CONTEXT FROM MEMORY]
+                        \(context)
 
-                    [USER MESSAGE]
-                    \(text)
-                    """
+                        [USER MESSAGE]
+                        \(text)
+                        """
                 }
             } catch {
                 // Non-fatal
@@ -119,11 +117,13 @@ public final class ChatViewModel: ObservableObject {
         // Finalize any live content
         if !liveContent.isEmpty {
             // Replace any previous content with the finalized assistant response
-            messages = [ChatMessage(
-                role: .assistant,
-                content: liveContent,
-                timestamp: Date()
-            )]
+            messages = [
+                ChatMessage(
+                    role: .assistant,
+                    content: liveContent,
+                    timestamp: Date()
+                )
+            ]
         }
 
         // Clear live state
@@ -183,7 +183,7 @@ public final class ChatViewModel: ObservableObject {
             finalizeResponse(text)
 
         case .gatewayReady:
-            statusText = "Connected"
+            statusText = "Gateway Connected"
             isConnected = true
 
         case .error(let msg):
@@ -232,10 +232,10 @@ public final class ChatViewModel: ObservableObject {
         refreshCurrentStatus()
     }
 
-   // MARK: - Helpers
+    // MARK: - Helpers
 
     private func refreshCurrentStatus() {
-       // Prefer live thinking stream
+        // Prefer live thinking stream
         if let thinking = liveThinking, !thinking.isEmpty {
             currentStatus = thinking
             return

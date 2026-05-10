@@ -10,7 +10,6 @@ struct ChatView: View {
     @FocusState private var isInputFocused: Bool
     
     var body: some View {
-        //        ZStack(alignment: .bottom) {
         VStack(alignment: .center, spacing: 0) {
             // Top toolbar
             // toolbar
@@ -34,13 +33,7 @@ struct ChatView: View {
             }
         }
         .environmentObject(viewModel)
-        //        }
-        //        .background(.thickMaterial)
-        //        .overlay {
-        //            RoundedRectangle(cornerRadius: 17, style: .continuous)
-        //                .stroke(.secondary.opacity(0.5), lineWidth: 1.0)
-        //        }
-        //        .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
+        
         .task {
 #if DEBUG
             if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" {
@@ -142,45 +135,39 @@ struct ChatView: View {
                     .textSelection(.enabled)
                     .padding()
                     .frame(maxWidth: 720, alignment: .leading)
-                    .background(.thickMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            } else if !viewModel.liveContent.isEmpty {
-                // Show streaming assistant text while response is in progress
-                MarkdownView(viewModel.liveContent)
-                    .textSelection(.enabled)
-                    .padding()
-                    .frame(maxWidth: 720, alignment: .leading)
-                    .background(.thickMaterial)
+                    .background(.ultraThickMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             }
+//            } else if !viewModel.liveContent.isEmpty {
+//                // Show streaming assistant text while response is in progress
+//                MarkdownView(viewModel.liveContent)
+//                    .textSelection(.enabled)
+//                    .padding()
+//                    .frame(maxWidth: 720, alignment: .leading)
+//                    .background(.thickMaterial)
+//                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+//            }
             
-            // Status indicators
-            if let status = viewModel.currentStatus {
-                Text(status)
-                    .font(.caption)
-                    .foregroundColor(.secondary.opacity(0.7))
-                    .padding(.horizontal)
-                    .frame(maxWidth: 720, alignment: .leading)
-            }
+            
             
             // Loading dots
-            if viewModel.loadingState.isLoading {
-                HStack(spacing: 4) {
-                    ForEach(0..<3, id: \.self) { i in
-                        Circle()
-                            .fill(Color.accentColor)
-                            .frame(width: 6, height: 6)
-                            .animation(
-                                .easeInOut(duration: 0.6)
-                                .repeatForever()
-                                .delay(Double(i) * 0.15),
-                                value: viewModel.loadingState.isLoading
-                            )
-                    }
-                }
-                .padding(.horizontal)
-                .frame(maxWidth: 720, alignment: .leading)
-            }
+            //            if viewModel.loadingState.isLoading {
+            //                HStack(spacing: 4) {
+            //                    ForEach(0..<3, id: \.self) { i in
+            //                        Circle()
+            //                            .fill(Color.accentColor)
+            //                            .frame(width: 6, height: 6)
+            //                            .animation(
+            //                                .easeInOut(duration: 0.6)
+            //                                .repeatForever()
+            //                                .delay(Double(i) * 0.15),
+            //                                value: viewModel.loadingState.isLoading
+            //                            )
+            //                    }
+            //                }
+            //                .padding(.horizontal)
+            //                .frame(maxWidth: 720, alignment: .leading)
+            //            }
         }
         .frame(maxWidth: 720, maxHeight: .infinity, alignment: .topLeading)
         .padding(.top, 8)
@@ -201,14 +188,6 @@ struct InputBarView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .center, spacing: 2) {
-                // Connection status
-                HStack(spacing: 5) {
-                    Circle()
-                        .fill(viewModel.isConnected ? Color.green : Color.orange)
-                        .frame(width: 7, height: 7)
-                }
-                
-                Spacer()
                 
                 TextField("Ask Hermes...", text: $text, axis: .vertical)
                     .font(.title3)
@@ -220,35 +199,99 @@ struct InputBarView: View {
                         self.submit()
                     }
                 
+            }
+            .padding(2)
+            //            .frame(height: 50)
+            
+            
+            
+            HStack(alignment: .firstTextBaseline) {
+                
+                Group {
+                    
+                    // Mode toggle — Stateless / Memory
+                    //                    HStack(spacing: 4) {
+                    //                        ForEach(ChatMode.allCases) { mode in
+                    //                            Button {
+                    //                                viewModel.chatMode = mode
+                    //                            } label: {
+                    //                                HStack(spacing: 4) {
+                    //                                    Image(systemName: mode.icon)
+                    //                                        .font(.system(size: 10, weight: .semibold))
+                    //                                    Text(mode.rawValue)
+                    //                                        .font(.system(size: 11, weight: .medium))
+                    //                                }
+                    //                                .padding(.horizontal, 8)
+                    //                                .padding(.vertical, 4)
+                    //                                .background(
+                    //                                    viewModel.chatMode == mode
+                    //                                    ? Color.accentColor.opacity(0.2)
+                    //                                    : Color.clear
+                    //                                )
+                    //                                .foregroundColor(
+                    //                                    viewModel.chatMode == mode ? .accentColor : .secondary
+                    //                                )
+                    //                                .clipShape(Capsule())
+                    //                            }
+                    //                            .buttonStyle(.plain)
+                    //                        }
+                    //                    }
+                    
+                    // Mode indicator
+                    Label(chatMode.rawValue, systemImage: chatMode.icon)
+                        .foregroundStyle(.gray.opacity(0.5))
+                        .font(.footnote)
+                        .fontWeight(.semibold)
+                        .labelStyle(SpacedLabelStyle(spacing: 5))
+                    
+                    
+                    
+                }
+                
+                
+                
                 Spacer()
                 
-                // Mode indicator
-                Label(chatMode.rawValue, systemImage: chatMode.icon)
-                    .foregroundStyle(.gray.opacity(0.5))
-                    .font(.footnote)
-                    .fontWeight(.semibold)
-                    .labelStyle(SpacedLabelStyle(spacing: 5))
+                // Connection status
+//                HStack(spacing: 5) {
+//                    Circle()
+//                        .fill(viewModel.isConnected ? Color.green : Color.orange)
+//                        .frame(width: 7, height: 7)
+//                }
+                // Status indicators
+                if let status = viewModel.currentStatus {
+                    Text(status)
+                        .font(.caption)
+                        .foregroundColor(.secondary.opacity(0.7))
+                        .padding(.horizontal)
+                        .frame(maxWidth: 720, alignment: .leading)
+                }
+                
             }
-            .frame(height: 50)
-        }
-        //        .padding(.top, 10)
+            
+            
+            
+        }.padding(.top, 3)
+        .padding(.bottom, 7)
         .padding(.horizontal)
         //                .padding(.vertical, 7)
         .background(.thickMaterial)
         .overlay {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .stroke(.secondary.opacity(0.5), lineWidth: 1.0)
+            
         }
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-//        .padding([.bottom, .horizontal], 15)
-//        .padding(.top, 5)
+        //        .padding([.bottom, .horizontal], 15)
+        //        .padding(.top, 5)
     }
     
     private func submit() {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        // Prompt persists in input until user clears it
         onSubmit(trimmed)
+        // Deselect text without clearing — move cursor to end
+        text = text
     }
 }
 
