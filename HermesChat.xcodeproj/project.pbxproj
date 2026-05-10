@@ -8,30 +8,44 @@
 
 /* Begin PBXBuildFile section */
 		0AABF9EA43DCF654894B738A /* HonchoMemoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507708D0FEACC5F6A00703E7 /* HonchoMemoryService.swift */; };
-		33A088087DBADCB6FC383E25 /* HermesChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656E0C1C6172EF26395F217 /* HermesChatApp.swift */; };
 		357271A0E25B3CBAB6800FF0 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91991442CB173A7D71D08EC9 /* ChatView.swift */; };
 		3F4E229307A2B92DC8FBB98F /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AAEBB2CE9EF82EF7DDC0A2E /* ChatViewModel.swift */; };
 		4EB62284843D89E19FC4384E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4BB8F709EE563D1517404C4 /* Assets.xcassets */; };
 		6B0EA862F93E9D97B970E432 /* GatewayClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C970B08981ABF2203D804C5 /* GatewayClient.swift */; };
 		762F25AA82D7E9DF61B11D42 /* ComponentStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */; };
 		AF4F268CCC4F26D685FE60A3 /* GatewayModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B418F72A11D92E20D731C5D /* GatewayModels.swift */; };
+		B713AAAC84FF59FC7E39D38A /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = DDBD2EA1765A2878179D31E1 /* KeyboardShortcuts */; };
 		BAB69188C7FB61C18A05A584 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9F5C927EAD34395BA11011 /* AppDelegate.swift */; };
+		BE523493A9FB60AB5F5F249C /* MarkdownView in Frameworks */ = {isa = PBXBuildFile; productRef = 7B847B017FA0C6C2EE086615 /* MarkdownView */; };
+		E5B7E10ED2EFA24BA93DFED5 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57F3696AA3F5291FFD2071E /* main.swift */; };
 		FA16F28BE545C6D9C39CDB5F /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCA94A742A12C1F5D0FFD78 /* ChatMessage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		23245B6E8F2A9A7A394852E9 /* HermesChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HermesChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/ComponentStyles.swift; sourceTree = "<group>"; };
-		4656E0C1C6172EF26395F217 /* HermesChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HermesChatApp.swift; sourceTree = "<group>"; };
+		44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentStyles.swift; sourceTree = "<group>"; };
 		4AAEBB2CE9EF82EF7DDC0A2E /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		507708D0FEACC5F6A00703E7 /* HonchoMemoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonchoMemoryService.swift; sourceTree = "<group>"; };
 		5C970B08981ABF2203D804C5 /* GatewayClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayClient.swift; sourceTree = "<group>"; };
-		91991442CB173A7D71D08EC9 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/ChatView.swift; sourceTree = "<group>"; };
+		91991442CB173A7D71D08EC9 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		9B418F72A11D92E20D731C5D /* GatewayModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayModels.swift; sourceTree = "<group>"; };
 		ACCA94A742A12C1F5D0FFD78 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		B4BB8F709EE563D1517404C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B57F3696AA3F5291FFD2071E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		ED9F5C927EAD34395BA11011 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		99D4E1BE859E5B9D81A47B38 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B713AAAC84FF59FC7E39D38A /* KeyboardShortcuts in Frameworks */,
+				BE523493A9FB60AB5F5F249C /* MarkdownView in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		0A1025563A2D258BAC88F34F /* Models */ = {
@@ -80,7 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				ED9F5C927EAD34395BA11011 /* AppDelegate.swift */,
-				4656E0C1C6172EF26395F217 /* HermesChatApp.swift */,
+				B57F3696AA3F5291FFD2071E /* main.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -119,9 +133,8 @@
 			children = (
 				91991442CB173A7D71D08EC9 /* ChatView.swift */,
 				44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */,
-				
 			);
-
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -133,6 +146,7 @@
 			buildPhases = (
 				826B5629B0929883375420D7 /* Sources */,
 				1D9D3910B2B12249C6844942 /* Resources */,
+				99D4E1BE859E5B9D81A47B38 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -140,6 +154,8 @@
 			);
 			name = HermesChat;
 			packageProductDependencies = (
+				DDBD2EA1765A2878179D31E1 /* KeyboardShortcuts */,
+				7B847B017FA0C6C2EE086615 /* MarkdownView */,
 			);
 			productName = HermesChat;
 			productReference = 23245B6E8F2A9A7A394852E9 /* HermesChat.app */;
@@ -168,6 +184,10 @@
 			);
 			mainGroup = C6988E78869DC4646BA1BD85;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				628FC37075587C353FF5CFCC /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
+				4E28C27C6076BA4CD56B7DF8 /* XCRemoteSwiftPackageReference "MarkdownView" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 44F68EE33E19F15B8A6EF68B /* Products */;
 			projectDirPath = "";
@@ -201,8 +221,8 @@
 				762F25AA82D7E9DF61B11D42 /* ComponentStyles.swift in Sources */,
 				6B0EA862F93E9D97B970E432 /* GatewayClient.swift in Sources */,
 				AF4F268CCC4F26D685FE60A3 /* GatewayModels.swift in Sources */,
-				33A088087DBADCB6FC383E25 /* HermesChatApp.swift in Sources */,
 				0AABF9EA43DCF654894B738A /* HonchoMemoryService.swift in Sources */,
+				E5B7E10ED2EFA24BA93DFED5 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,6 +414,38 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4E28C27C6076BA4CD56B7DF8 /* XCRemoteSwiftPackageReference "MarkdownView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/cyrilzakka/MarkdownView.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		628FC37075587C353FF5CFCC /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7B847B017FA0C6C2EE086615 /* MarkdownView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4E28C27C6076BA4CD56B7DF8 /* XCRemoteSwiftPackageReference "MarkdownView" */;
+			productName = MarkdownView;
+		};
+		DDBD2EA1765A2878179D31E1 /* KeyboardShortcuts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 628FC37075587C353FF5CFCC /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
+			productName = KeyboardShortcuts;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BD8AF0C259AF7A97636A68F7 /* Project object */;
 }
