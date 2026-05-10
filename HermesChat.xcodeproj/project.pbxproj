@@ -11,6 +11,7 @@
 		357271A0E25B3CBAB6800FF0 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91991442CB173A7D71D08EC9 /* ChatView.swift */; };
 		3F4E229307A2B92DC8FBB98F /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AAEBB2CE9EF82EF7DDC0A2E /* ChatViewModel.swift */; };
 		4EB62284843D89E19FC4384E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4BB8F709EE563D1517404C4 /* Assets.xcassets */; };
+		5963A71107B17CC34545947D /* KeyboardShortcuts+Definitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0172F632A94FF339AC01BCC1 /* KeyboardShortcuts+Definitions.swift */; };
 		6B0EA862F93E9D97B970E432 /* GatewayClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C970B08981ABF2203D804C5 /* GatewayClient.swift */; };
 		762F25AA82D7E9DF61B11D42 /* ComponentStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */; };
 		AF4F268CCC4F26D685FE60A3 /* GatewayModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B418F72A11D92E20D731C5D /* GatewayModels.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0172F632A94FF339AC01BCC1 /* KeyboardShortcuts+Definitions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardShortcuts+Definitions.swift"; sourceTree = "<group>"; };
 		23245B6E8F2A9A7A394852E9 /* HermesChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HermesChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentStyles.swift; sourceTree = "<group>"; };
 		4AAEBB2CE9EF82EF7DDC0A2E /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				ED9F5C927EAD34395BA11011 /* AppDelegate.swift */,
+				0172F632A94FF339AC01BCC1 /* KeyboardShortcuts+Definitions.swift */,
 				B57F3696AA3F5291FFD2071E /* main.swift */,
 			);
 			path = App;
@@ -186,7 +189,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				628FC37075587C353FF5CFCC /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
-				4E28C27C6076BA4CD56B7DF8 /* XCRemoteSwiftPackageReference "MarkdownView" */,
+				D2D60984906030780BA8FFDB /* XCRemoteSwiftPackageReference "MarkdownView" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 44F68EE33E19F15B8A6EF68B /* Products */;
@@ -222,6 +225,7 @@
 				6B0EA862F93E9D97B970E432 /* GatewayClient.swift in Sources */,
 				AF4F268CCC4F26D685FE60A3 /* GatewayModels.swift in Sources */,
 				0AABF9EA43DCF654894B738A /* HonchoMemoryService.swift in Sources */,
+				5963A71107B17CC34545947D /* KeyboardShortcuts+Definitions.swift in Sources */,
 				E5B7E10ED2EFA24BA93DFED5 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -416,14 +420,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4E28C27C6076BA4CD56B7DF8 /* XCRemoteSwiftPackageReference "MarkdownView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/cyrilzakka/MarkdownView.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		628FC37075587C353FF5CFCC /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
@@ -432,12 +428,20 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		D2D60984906030780BA8FFDB /* XCRemoteSwiftPackageReference "MarkdownView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/LiYanan2004/MarkdownView.git";
+			requirement = {
+				kind = revision;
+				revision = 31e52d2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		7B847B017FA0C6C2EE086615 /* MarkdownView */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4E28C27C6076BA4CD56B7DF8 /* XCRemoteSwiftPackageReference "MarkdownView" */;
+			package = D2D60984906030780BA8FFDB /* XCRemoteSwiftPackageReference "MarkdownView" */;
 			productName = MarkdownView;
 		};
 		DDBD2EA1765A2878179D31E1 /* KeyboardShortcuts */ = {
