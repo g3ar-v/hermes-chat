@@ -48,6 +48,26 @@ struct ChatView: View {
         .environmentObject(viewModel)
     }
     
+    // MARK: - Conversation Content
+    
+    private var conversationContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                // Last assistant response or streaming content
+                if let last = viewModel.messages.last(where: { $0.role == .assistant }) {
+                    MarkdownView(last.content)
+                        .textSelection(.enabled)
+                        .padding()
+                        .frame(maxWidth: 720, alignment: .leading)
+                        .background(.ultraThickMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                }
+            }
+            .padding(.top, 8)
+        }
+        .frame(maxWidth: 720, minHeight: 300, maxHeight: 720, alignment: .topLeading)
+    }
+    
     @Environment(\.colorScheme) private var colorScheme
     
     // MARK: - Toolbar
@@ -125,53 +145,6 @@ struct ChatView: View {
         .background(Color(nsColor: .windowBackgroundColor).opacity(0.3))
     }
     
-    // MARK: - Conversation Content
-    
-    private var conversationContent: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Last assistant response or streaming content
-            if let last = viewModel.messages.last(where: { $0.role == .assistant }) {
-                MarkdownView(last.content)
-                    .textSelection(.enabled)
-                    .padding()
-                    .frame(maxWidth: 720, alignment: .leading)
-                    .background(.ultraThickMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            }
-//            } else if !viewModel.liveContent.isEmpty {
-//                // Show streaming assistant text while response is in progress
-//                MarkdownView(viewModel.liveContent)
-//                    .textSelection(.enabled)
-//                    .padding()
-//                    .frame(maxWidth: 720, alignment: .leading)
-//                    .background(.thickMaterial)
-//                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-//            }
-            
-            
-            
-            // Loading dots
-            //            if viewModel.loadingState.isLoading {
-            //                HStack(spacing: 4) {
-            //                    ForEach(0..<3, id: \.self) { i in
-            //                        Circle()
-            //                            .fill(Color.accentColor)
-            //                            .frame(width: 6, height: 6)
-            //                            .animation(
-            //                                .easeInOut(duration: 0.6)
-            //                                .repeatForever()
-            //                                .delay(Double(i) * 0.15),
-            //                                value: viewModel.loadingState.isLoading
-            //                            )
-            //                    }
-            //                }
-            //                .padding(.horizontal)
-            //                .frame(maxWidth: 720, alignment: .leading)
-            //            }
-        }
-        .frame(maxWidth: 720, maxHeight: .infinity, alignment: .topLeading)
-        .padding(.top, 8)
-    }
 }
 
 // MARK: - Input Bar
