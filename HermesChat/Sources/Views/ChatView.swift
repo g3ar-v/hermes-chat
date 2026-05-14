@@ -7,10 +7,11 @@ struct ChatView: View {
     
     @StateObject private var viewModel = ChatViewModel()
     @State private var inputText: String = ""
+    @State private var conversationSize: CGSize = CGSize(width: 0, height: 100)
     @FocusState private var isInputFocused: Bool
     
     var body: some View {
-        VStack(alignment: .center, spacing: 0) {
+        VStack(alignment: .leading, spacing: 5) {
             // Top toolbar
             // toolbar
             
@@ -24,6 +25,7 @@ struct ChatView: View {
             }
             .frame(maxWidth: 720)
             .padding(.horizontal, 15)
+            
             
             // Message list appears when there are messages or streaming content
             if !viewModel.messages.isEmpty || !viewModel.liveContent.isEmpty {
@@ -51,21 +53,58 @@ struct ChatView: View {
     // MARK: - Conversation Content
     
     private var conversationContent: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                // Last assistant response or streaming content
-                if let last = viewModel.messages.last(where: { $0.role == .assistant }) {
-                    MarkdownView(last.content)
-                        .textSelection(.enabled)
-                        .padding()
-                        .frame(maxWidth: 720, alignment: .leading)
-                        .background(.ultraThickMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    // Last assistant response or streaming content
+                    if let last = viewModel.messages.last(where: { $0.role == .assistant }) {
+                        MarkdownView(last.content)
+                            .textSelection(.enabled)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .id(88)
+                    } else if !viewModel.liveContent.isEmpty {
+                        MarkdownView(viewModel.liveContent)
+                            .textSelection(.enabled)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .id(88)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .onGeometryChange(for: CGRect.self) { proxy in
+                    proxy.frame(in: .global)
+                } action: { newValue in
+                    conversationSize.width = newValue.width
+                    conversationSize.height = min(max(newValue.height, 20), 500)
                 }
             }
-            .padding(.top, 8)
+            .onChange(of: viewModel.messages.last?.content) {
+                DispatchQueue.main.async {
+                    withAnimation {
+                        proxy.scrollTo(88, anchor: .bottom)
+                    }
+                }
+            }
+            .onChange(of: viewModel.liveContent) {
+                DispatchQueue.main.async {
+                    withAnimation {
+                        proxy.scrollTo(88, anchor: .bottom)
+                    }
+                }
+            }
         }
-        .frame(maxWidth: 720, minHeight: 300, maxHeight: 720, alignment: .topLeading)
+        .frame(height: conversationSize.height)
+        .contentMargins(.horizontal, 10, for: .scrollContent)
+//        .scrollIndicators(.hidden)
+        .background(.ultraThickMaterial)
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(.secondary.opacity(0.5), lineWidth: 1.0)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
     
     @Environment(\.colorScheme) private var colorScheme
@@ -178,7 +217,7 @@ struct InputBarView: View {
             
             
             
-            HStack(alignment: .firstTextBaseline) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
                 
                 Group {
                     
