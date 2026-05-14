@@ -2,6 +2,10 @@
 import Combine
 import Foundation
 
+// MARK: - Debug Toggle
+// Set to true to enable console logging for events and state transitions
+private let debugLogs = false
+
 @MainActor
 public final class ChatViewModel: ObservableObject {
     // MARK: - Finalized Messages
@@ -86,21 +90,21 @@ public final class ChatViewModel: ObservableObject {
 
         // Build prompt
         var prompt = text
-        if chatMode == .memory {
-            do {
-                if let context = try await HonchoMemoryService.shared.fetchContext() {
-                    prompt = """
-                        [CONTEXT FROM MEMORY]
-                        \(context)
-
-                        [USER MESSAGE]
-                        \(text)
-                        """
-                }
-            } catch {
-                // Non-fatal
-            }
-        }
+//        if chatMode == .memory {
+//            do {
+//                if let context = try await HonchoMemoryService.shared.fetchContext() {
+//                    prompt = """
+//                        [CONTEXT FROM MEMORY]
+//                        \(context)
+//
+//                        [USER MESSAGE]
+//                        \(text)
+//                        """
+//                }
+//            } catch {
+//                // Non-fatal
+//            }
+//        }
 
         do {
             try await GatewayClient.shared.submitPrompt(sessionId: sessionId, text: prompt)
@@ -143,14 +147,19 @@ public final class ChatViewModel: ObservableObject {
         case .messageDelta(let text):
             // Append streaming assistant text to liveContent so the UI can show it
             liveContent += text
+            if debugLogs {
+                print("[DEBUG] messageDelta -> liveContent length: \(liveContent.count), isEmpty: \(liveContent.isEmpty), isWhitespaceOnly: \(liveContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)")
+            }
             return
         case .thinkingDelta(let text):
             liveThinking = text
+            if debugLogs { print("[DEBUG] thinkingDelta -> liveContent: \(liveContent.count), liveThinking: \(liveThinking?.count ?? 0)") }
             // Also append to liveContent so nothing is lost
-            liveContent += text
+//            liveContent += text
 
         case .reasoningAvailable(let text):
             liveThinking = text
+            if debugLogs { print("[DEBUG] reasoningAvailable -> liveContent: \(liveContent.count), liveThinking: \(liveThinking?.count ?? 0)") }
 
         case .reasoningDelta:
             break
@@ -163,6 +172,7 @@ public final class ChatViewModel: ObservableObject {
         case .toolStart(_, let name, let context):
             liveToolName = name
             liveToolSummary = context
+            if debugLogs { print("[DEBUG] toolStart: \(name), summary: \(context ?? "nil")") }
 
         case .toolProgress(_, _, let preview):
             if let preview = preview {
@@ -180,6 +190,7 @@ public final class ChatViewModel: ObservableObject {
             break
 
         case .messageComplete(let text, _):
+            if debugLogs { print("[DEBUG] messageComplete, text length: \(text.count)") }
             finalizeResponse(text)
 
         case .gatewayReady:
