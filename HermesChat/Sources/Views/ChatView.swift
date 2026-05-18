@@ -261,6 +261,14 @@ struct InputBarView: View {
                         .font(.footnote)
                         .fontWeight(.semibold)
                         .labelStyle(SpacedLabelStyle(spacing: 5))
+
+                    // Model label
+                    if let model = viewModel.modelLabel {
+                        Text(model)
+                            .font(.caption2)
+                            .foregroundColor(.secondary.opacity(0.6))
+                            .lineLimit(1)
+                    }
                     
                     
                     
@@ -280,6 +288,7 @@ struct InputBarView: View {
                     Text(status)
                         .font(.caption)
                         .foregroundColor(.secondary.opacity(0.7))
+                        .lineLimit(1)
                 }
                 
             }.frame(maxWidth: .infinity, alignment: .leading)

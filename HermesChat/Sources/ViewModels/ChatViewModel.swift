@@ -30,6 +30,9 @@ public final class ChatViewModel: ObservableObject {
     // Push-style synthesized status for UI
     @Published public var currentStatus: String? = nil
 
+    // Current model/provider info from gateway session
+    @Published public var modelLabel: String? = nil
+
     // MARK: - Private
     private var isGenerating = false
 
@@ -186,7 +189,10 @@ public final class ChatViewModel: ObservableObject {
         case .statusUpdate(_, let text):
             statusText = text
 
-        case .sessionInfo:
+        case .sessionInfo(let info):
+            if let model = info.model {
+                modelLabel = info.provider.map { "\(model) @ \($0)" } ?? model
+            }
             break
 
         case .messageComplete(let text, _):
