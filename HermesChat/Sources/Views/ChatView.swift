@@ -261,8 +261,7 @@ struct InputBarView: View {
                 }
                 
                 
-                
-                Spacer()
+               Spacer()
                 
                 // Connection status
 //                HStack(spacing: 5) {
@@ -270,20 +269,20 @@ struct InputBarView: View {
 //                        .fill(viewModel.isConnected ? Color.green : Color.orange)
 //                        .frame(width: 7, height: 7)
 //                }
-                // Status indicators
+                // Status indicator
                 if let status = viewModel.currentStatus {
                     Text(status)
                         .font(.caption)
                         .foregroundColor(.secondary.opacity(0.7))
-                        .padding(.horizontal)
-                        .frame(maxWidth: 720, alignment: .leading)
                 }
                 
-            }
+            }.frame(maxWidth: .infinity, alignment: .leading)
             
             
             
-        }.padding(.top, 3)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 3)
         .padding(.bottom, 7)
         .padding(.horizontal)
         //                .padding(.vertical, 7)
