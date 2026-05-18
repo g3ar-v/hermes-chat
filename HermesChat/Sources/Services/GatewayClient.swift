@@ -75,7 +75,7 @@ public final class GatewayClient: @unchecked Sendable {
 
     // MARK: - Lifecycle
 
-    public func start() async throws {
+    public func start(profile: String? = nil) async throws {
         guard proc == nil else { return }
 
         let python = try findPython()
@@ -84,10 +84,15 @@ public final class GatewayClient: @unchecked Sendable {
         proc?.arguments = ["-m", "tui_gateway.entry"]
         // Propagate current environment but ensure subprocesses inherit a profile-aware HERMES_HOME.
         var env = ProcessInfo.processInfo.environment
-        if (env["HERMES_HOME"] ?? "").isEmpty, let profile = env["HERMES_PROFILE"], !profile.isEmpty {
-            // If HERMES_HOME is unset but a profile is active, point subprocesses at the profile dir.
+        
+        // Explicit profile takes priority
+        if let profile, !profile.isEmpty {
             let home = NSHomeDirectory()
             env["HERMES_HOME"] = "\(home)/.hermes/profiles/\(profile)"
+        } else if (env["HERMES_HOME"] ?? "").isEmpty,
+            let pf = env["HERMES_PROFILE"], !pf.isEmpty {
+            let home = NSHomeDirectory()
+            env["HERMES_HOME"] = "\(home)/.hermes/profiles/\(pf)"
         }
         proc?.environment = env
 

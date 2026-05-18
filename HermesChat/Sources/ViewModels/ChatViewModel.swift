@@ -32,6 +32,9 @@ public final class ChatViewModel: ObservableObject {
 
     // Current model/provider info from gateway session
     @Published public var modelLabel: String? = nil
+   
+    // Current Hermes Profile used in chat
+    @Published public var chatProfile: String? = nil
 
     // MARK: - Private
     private var isGenerating = false
@@ -44,7 +47,9 @@ public final class ChatViewModel: ObservableObject {
 
     public func connect() async {
         do {
-            try await GatewayClient.shared.start()
+            let profileName = ProfileService.shared.activeProfileName
+            try await GatewayClient.shared.start(profile: profileName)
+            chatProfile = profileName
             let session = try await GatewayClient.shared.createSession()
             currentSessionId = session.sessionId
             statusText = "Connected"

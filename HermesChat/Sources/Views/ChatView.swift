@@ -270,6 +270,11 @@ struct InputBarView: View {
                             .lineLimit(1)
                     }
                     
+                    if let profile = viewModel.chatProfile {
+                        Text(profile)
+                            .font(.caption2)
+                    }
+                    
                     
                     
                 }
