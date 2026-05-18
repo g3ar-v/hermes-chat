@@ -209,7 +209,13 @@ struct InputBarView: View {
                     .frame(minHeight: 50, alignment: .center)
                     .onSubmit {
                         self.submit()
+                        isFocused = false
+//                        let temp_text = text
+//                        text = ""
+//                        text = temp_text
+
                     }
+
                 
             }
             .padding(2)
