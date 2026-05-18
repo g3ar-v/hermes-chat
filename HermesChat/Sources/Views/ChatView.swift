@@ -80,21 +80,21 @@ struct ChatView: View {
                     conversationSize.width = newValue.width
                     conversationSize.height = min(max(newValue.height, 20), 500)
                 }
-            }
-            .onChange(of: viewModel.messages.last?.content) {
-                DispatchQueue.main.async {
-                    withAnimation {
-                        proxy.scrollTo(88, anchor: .bottom)
-                    }
-                }
-            }
-            .onChange(of: viewModel.liveContent) {
-                DispatchQueue.main.async {
-                    withAnimation {
-                        proxy.scrollTo(88, anchor: .bottom)
-                    }
-                }
-            }
+            }// Scroll to bottom 
+//            .onChange(of: viewModel.messages.last?.content) {
+//                DispatchQueue.main.async {
+//                    withAnimation {
+//                        proxy.scrollTo(88, anchor: .bottom)
+//                    }
+//                }
+//            }
+//            .onChange(of: viewModel.liveContent) {
+//                DispatchQueue.main.async {
+//                    withAnimation {
+//                        proxy.scrollTo(88, anchor: .bottom)
+//                    }
+//                }
+//            }
         }
         .frame(height: conversationSize.height)
         .contentMargins(.horizontal, 10, for: .scrollContent)
