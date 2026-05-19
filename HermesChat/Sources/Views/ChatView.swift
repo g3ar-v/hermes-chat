@@ -1,5 +1,5 @@
-import SwiftUI
 import MarkdownView
+import SwiftUI
 
 // MARK: - Chat View (Root)
 
@@ -9,6 +9,7 @@ struct ChatView: View {
     @State private var inputText: String = ""
     @State private var conversationSize: CGSize = CGSize(width: 0, height: 100)
     @FocusState private var isInputFocused: Bool
+    
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -25,7 +26,6 @@ struct ChatView: View {
             }
             .frame(maxWidth: 720)
             .padding(.horizontal, 15)
-            
             
             // Message list appears when there are messages or streaming content
             if !viewModel.messages.isEmpty || !viewModel.liveContent.isEmpty {
@@ -80,25 +80,25 @@ struct ChatView: View {
                     conversationSize.width = newValue.width
                     conversationSize.height = min(max(newValue.height, 20), 500)
                 }
-            }// Scroll to bottom 
-//            .onChange(of: viewModel.messages.last?.content) {
-//                DispatchQueue.main.async {
-//                    withAnimation {
-//                        proxy.scrollTo(88, anchor: .bottom)
-//                    }
-//                }
-//            }
-//            .onChange(of: viewModel.liveContent) {
-//                DispatchQueue.main.async {
-//                    withAnimation {
-//                        proxy.scrollTo(88, anchor: .bottom)
-//                    }
-//                }
-//            }
+            }  // Scroll to bottom
+            //            .onChange(of: viewModel.messages.last?.content) {
+            //                DispatchQueue.main.async {
+            //                    withAnimation {
+            //                        proxy.scrollTo(88, anchor: .bottom)
+            //                    }
+            //                }
+            //            }
+            //            .onChange(of: viewModel.liveContent) {
+            //                DispatchQueue.main.async {
+            //                    withAnimation {
+            //                        proxy.scrollTo(88, anchor: .bottom)
+            //                    }
+            //                }
+            //            }
         }
         .frame(height: conversationSize.height)
         .contentMargins(.horizontal, 10, for: .scrollContent)
-//        .scrollIndicators(.hidden)
+        //        .scrollIndicators(.hidden)
         .background(.ultraThickMaterial)
         .overlay {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
@@ -224,18 +224,15 @@ struct InputBarView: View {
                     .onSubmit {
                         self.submit()
                         isFocused = false
-//                        let temp_text = text
-//                        text = ""
-//                        text = temp_text
-
+                        //                        let temp_text = text
+                        //                        text = ""
+                        //                        text = temp_text
+                        
                     }
-
                 
             }
-            .padding(2)
+            // .padding(2)
             //            .frame(height: 50)
-            
-            
             
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 
@@ -275,7 +272,7 @@ struct InputBarView: View {
                         .font(.footnote)
                         .fontWeight(.semibold)
                         .labelStyle(SpacedLabelStyle(spacing: 5))
-
+                    
                     // Model label
                     if let model = viewModel.modelLabel {
                         Text(model)
@@ -289,19 +286,16 @@ struct InputBarView: View {
                             .font(.caption2)
                     }
                     
-                    
-                    
                 }
                 
-                
-               Spacer()
+                Spacer()
                 
                 // Connection status
-//                HStack(spacing: 5) {
-//                    Circle()
-//                        .fill(viewModel.isConnected ? Color.green : Color.orange)
-//                        .frame(width: 7, height: 7)
-//                }
+                //                HStack(spacing: 5) {
+                //                    Circle()
+                //                        .fill(viewModel.isConnected ? Color.green : Color.orange)
+                //                        .frame(width: 7, height: 7)
+                //                }
                 // Status indicator
                 if let status = viewModel.currentStatus {
                     Text(status)
@@ -311,8 +305,6 @@ struct InputBarView: View {
                 }
                 
             }.frame(maxWidth: .infinity, alignment: .leading)
-            
-            
             
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -339,4 +331,3 @@ struct InputBarView: View {
         text = text
     }
 }
-
