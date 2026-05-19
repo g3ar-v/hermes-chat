@@ -39,7 +39,7 @@ final class FloatingPanel: NSPanel, NSWindowDelegate {
     override var canBecomeMain: Bool { true }
 
     func windowDidResignKey(_ notification: Notification) {
-        if !isFileImporterVisible {
+        if !isFileImporterVisible && !UserDefaults.standard.bool(forKey: "isPinned") {
             orderOut(nil)
         }
     }

@@ -194,11 +194,25 @@ struct InputBarView: View {
     let chatMode: ChatMode
     let onSubmit: (String) -> Void
     
+    @AppStorage("isPinned") private var isPinned = false
     @EnvironmentObject private var viewModel: ChatViewModel
     @FocusState private var isFocused: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading) {
+            HStack() {
+                Spacer()
+                      Button {
+                          isPinned.toggle()
+                      } label: {
+                          Image(systemName: isPinned ? "pin.fill" : "pin")
+                              .font(.caption2)
+                              .foregroundColor(isPinned ? .accentColor : .secondary.opacity(0.5))
+                      }
+                      .buttonStyle(.plain)
+                      .help(isPinned ? "Unpin panel" : "Pin panel")
+                      .padding(.top, 2)
+            }
             HStack(alignment: .center, spacing: 2) {
                 
                 TextField("Ask Hermes...", text: $text, axis: .vertical)
