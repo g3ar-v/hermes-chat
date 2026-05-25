@@ -1,3 +1,15 @@
+// MARK: - Error Type
+
+public enum LocalChatError: LocalizedError {
+    case message(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case .message(let msg): return msg
+        }
+    }
+}
+
 // MARK: - Chat View Model
 import Combine
 import Foundation
@@ -46,8 +58,21 @@ public final class ChatViewModel: ObservableObject {
     // MARK: - Gateway Lifecycle
 
     public func connect() async {
+        let profileName = ProfileService.shared.activeProfileName
+
+        // In stateless mode, we don't need the gateway at all
+        if chatMode == .stateless {
+            chatProfile = profileName
+            modelLabel = "\(LocalChatService.model) @ local"
+            statusText = "Standby"
+            isConnected = true
+            currentSessionId = nil
+            messages = []
+            refreshCurrentStatus()
+            return
+        }
+
         do {
-            let profileName = ProfileService.shared.activeProfileName
             try await GatewayClient.shared.start(profile: profileName)
             chatProfile = profileName
             let session = try await GatewayClient.shared.createSession()
@@ -82,7 +107,11 @@ public final class ChatViewModel: ObservableObject {
 
     public func send(_ text: String) async {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-        guard isConnected, let sessionId = currentSessionId else { return }
+
+        // For memory mode, ensure we have a gateway connection and session
+        if chatMode == .memory {
+            guard isConnected, currentSessionId != nil else { return }
+        }
 
         // Clear previous assistant response — message view should only show the current assistant response
         messages = []
@@ -115,20 +144,36 @@ public final class ChatViewModel: ObservableObject {
 //        }
 
         do {
-            try await GatewayClient.shared.submitPrompt(sessionId: sessionId, text: prompt)
+            if chatMode == .stateless {
+                // Stateless mode: call local OpenAI-compatible endpoint directly
+                LocalChatService.shared.send(text: prompt) { [weak self] event in
+                    Task { @MainActor [weak self] in
+                        guard let self else { return }
+                        switch event {
+                        case .delta(let content):
+                            liveContent += content
+                        case .complete(let finalContent):
+                            finalizeResponse(finalContent)
+                        case .error(let msg):
+                            handleError(LocalChatError.message(msg))
+                        }
+                    }
+                }
+            } else if let sessionId = currentSessionId {
+                try await GatewayClient.shared.submitPrompt(sessionId: sessionId, text: prompt)
+            }
         } catch {
             handleError(error)
         }
     }
 
     public func stopGenerating() async {
-        guard isGenerating, let sessionId = currentSessionId else { return }
+        guard isGenerating else { return }
         isGenerating = false
         loadingState = .idle
 
         // Finalize any live content
         if !liveContent.isEmpty {
-            // Replace any previous content with the finalized assistant response
             messages = [
                 ChatMessage(
                     role: .assistant,
@@ -144,7 +189,11 @@ public final class ChatViewModel: ObservableObject {
         liveToolName = nil
         liveToolSummary = nil
 
-        try? await GatewayClient.shared.interrupt(sessionId: sessionId)
+        if chatMode == .memory, let sessionId = currentSessionId {
+            try? await GatewayClient.shared.interrupt(sessionId: sessionId)
+        } else {
+            LocalChatService.shared.cancel()
+        }
         refreshCurrentStatus()
     }
 
@@ -304,12 +353,20 @@ public final class ChatViewModel: ObservableObject {
         loadingState = .idle
         isGenerating = false
 
+        if chatMode == .stateless {
+            modelLabel = "\(LocalChatService.model) @ local"
+            isConnected = true
+            currentSessionId = nil
+            statusText = "Standby"
+            refreshCurrentStatus()
+            return
+        }
+
         Task {
             if isConnected {
                 do {
                     let result = try await GatewayClient.shared.createSession()
                     currentSessionId = result.sessionId
-                    // Keep message view empty on mode switch; only assistant responses to user prompts should appear.
                     messages = []
                 } catch {
                     handleError(error)

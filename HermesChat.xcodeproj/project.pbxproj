@@ -15,10 +15,12 @@
 		5963A71107B17CC34545947D /* KeyboardShortcuts+Definitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0172F632A94FF339AC01BCC1 /* KeyboardShortcuts+Definitions.swift */; };
 		6B0EA862F93E9D97B970E432 /* GatewayClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C970B08981ABF2203D804C5 /* GatewayClient.swift */; };
 		762F25AA82D7E9DF61B11D42 /* ComponentStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */; };
+		98E1A1075180119F587DCE78 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FC232AE4CD387A00986D90 /* SettingsView.swift */; };
 		AF4F268CCC4F26D685FE60A3 /* GatewayModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B418F72A11D92E20D731C5D /* GatewayModels.swift */; };
 		B713AAAC84FF59FC7E39D38A /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = DDBD2EA1765A2878179D31E1 /* KeyboardShortcuts */; };
 		BAB69188C7FB61C18A05A584 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9F5C927EAD34395BA11011 /* AppDelegate.swift */; };
 		BE523493A9FB60AB5F5F249C /* MarkdownView in Frameworks */ = {isa = PBXBuildFile; productRef = 7B847B017FA0C6C2EE086615 /* MarkdownView */; };
+		C8246955C37761308ED94EB3 /* LocalChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32ECAC97F40C6602DD5CA3DD /* LocalChatService.swift */; };
 		E5B7E10ED2EFA24BA93DFED5 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57F3696AA3F5291FFD2071E /* main.swift */; };
 		FA16F28BE545C6D9C39CDB5F /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCA94A742A12C1F5D0FFD78 /* ChatMessage.swift */; };
 /* End PBXBuildFile section */
@@ -26,11 +28,13 @@
 /* Begin PBXFileReference section */
 		0172F632A94FF339AC01BCC1 /* KeyboardShortcuts+Definitions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardShortcuts+Definitions.swift"; sourceTree = "<group>"; };
 		23245B6E8F2A9A7A394852E9 /* HermesChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HermesChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		32ECAC97F40C6602DD5CA3DD /* LocalChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalChatService.swift; sourceTree = "<group>"; };
 		44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentStyles.swift; sourceTree = "<group>"; };
 		4AAEBB2CE9EF82EF7DDC0A2E /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		507708D0FEACC5F6A00703E7 /* HonchoMemoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonchoMemoryService.swift; sourceTree = "<group>"; };
 		5C970B08981ABF2203D804C5 /* GatewayClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayClient.swift; sourceTree = "<group>"; };
 		91991442CB173A7D71D08EC9 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		99FC232AE4CD387A00986D90 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		9B418F72A11D92E20D731C5D /* GatewayModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayModels.swift; sourceTree = "<group>"; };
 		ACCA94A742A12C1F5D0FFD78 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		B4BB8F709EE563D1517404C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -109,6 +113,7 @@
 			children = (
 				5C970B08981ABF2203D804C5 /* GatewayClient.swift */,
 				507708D0FEACC5F6A00703E7 /* HonchoMemoryService.swift */,
+				32ECAC97F40C6602DD5CA3DD /* LocalChatService.swift */,
 				F6F0CEA489DA19ABF10A8AD4 /* ProfileService.swift */,
 			);
 			path = Services;
@@ -139,6 +144,7 @@
 			children = (
 				91991442CB173A7D71D08EC9 /* ChatView.swift */,
 				44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */,
+				99FC232AE4CD387A00986D90 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -229,7 +235,9 @@
 				AF4F268CCC4F26D685FE60A3 /* GatewayModels.swift in Sources */,
 				0AABF9EA43DCF654894B738A /* HonchoMemoryService.swift in Sources */,
 				5963A71107B17CC34545947D /* KeyboardShortcuts+Definitions.swift in Sources */,
+				C8246955C37761308ED94EB3 /* LocalChatService.swift in Sources */,
 				2F2376B2E95901A7AE675BD5 /* ProfileService.swift in Sources */,
+				98E1A1075180119F587DCE78 /* SettingsView.swift in Sources */,
 				E5B7E10ED2EFA24BA93DFED5 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -241,7 +249,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = HermesChat/HermesChat.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -320,7 +327,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = HermesChat/HermesChat.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				GENERATE_INFOPLIST_FILE = NO;

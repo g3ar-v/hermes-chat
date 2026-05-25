@@ -120,8 +120,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         panel.makeKeyAndOrderFront(nil)
     }
 
+    private var settingsController: SettingsWindowController?
+
     @objc private func openSettings() {
-        // Settings not yet implemented
+        if settingsController == nil {
+            settingsController = SettingsWindowController()
+        }
+        settingsController?.showWindow(nil)
+        settingsController?.window?.makeKeyAndOrderFront(nil)
     }
 
     private func registerGlobalHotkey() {
