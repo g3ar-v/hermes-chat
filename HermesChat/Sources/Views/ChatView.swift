@@ -100,11 +100,11 @@ struct ChatView: View {
         .contentMargins(.horizontal, 10, for: .scrollContent)
         //        .scrollIndicators(.hidden)
         .background(.ultraThickMaterial)
-//        .overlay {
-//            RoundedRectangle(cornerRadius: 20, style: .continuous)
-//                .stroke(.secondary.opacity(0.5), lineWidth: 1.0)
-//        }
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(.secondary.opacity(0.5), lineWidth: 1.0)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
     
     @Environment(\.colorScheme) private var colorScheme
@@ -240,23 +240,40 @@ struct InputBarView: View {
                 
                 Group {
                     
-                    // Mode toggle — menu to pick Stateless / Memory
-                    Menu {
-                        ForEach(ChatMode.allCases) { mode in
-                            Button {
-                                viewModel.chatMode = mode
-                            } label: {
-                                Label(mode.rawValue, systemImage: mode.icon)
-                            }
-                        }
-                    } label: {
-                        Label(chatMode.rawValue, systemImage: chatMode.icon)
-                            .font(.footnote)
-                            .fontWeight(.semibold)
-                            .labelStyle(SpacedLabelStyle(spacing: 5))
-                    }
-                    .fixedSize()
-                    .foregroundStyle(.gray.opacity(0.5))
+                    // Mode toggle — Stateless / Memory
+                    //                    HStack(spacing: 4) {
+                    //                        ForEach(ChatMode.allCases) { mode in
+                    //                            Button {
+                    //                                viewModel.chatMode = mode
+                    //                            } label: {
+                    //                                HStack(spacing: 4) {
+                    //                                    Image(systemName: mode.icon)
+                    //                                        .font(.system(size: 10, weight: .semibold))
+                    //                                    Text(mode.rawValue)
+                    //                                        .font(.system(size: 11, weight: .medium))
+                    //                                }
+                    //                                .padding(.horizontal, 8)
+                    //                                .padding(.vertical, 4)
+                    //                                .background(
+                    //                                    viewModel.chatMode == mode
+                    //                                    ? Color.accentColor.opacity(0.2)
+                    //                                    : Color.clear
+                    //                                )
+                    //                                .foregroundColor(
+                    //                                    viewModel.chatMode == mode ? .accentColor : .secondary
+                    //                                )
+                    //                                .clipShape(Capsule())
+                    //                            }
+                    //                            .buttonStyle(.plain)
+                    //                        }
+                    //                    }
+                    
+                    // Mode indicator
+                    Label(chatMode.rawValue, systemImage: chatMode.icon)
+                        .foregroundStyle(.gray.opacity(0.5))
+                        .font(.footnote)
+                        .fontWeight(.semibold)
+                        .labelStyle(SpacedLabelStyle(spacing: 5))
                     
                     // Model label
                     if let model = viewModel.modelLabel {
@@ -304,12 +321,12 @@ struct InputBarView: View {
         .padding(.horizontal)
         //                .padding(.vertical, 7)
         .background(.thickMaterial)
-//        .overlay {
-//            RoundedRectangle(cornerRadius: 20, style: .continuous)
-//                .stroke(.secondary.opacity(0.5), lineWidth: 1.0)
-//            
-//        }
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(.secondary.opacity(0.5), lineWidth: 1.0)
+            
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         //        .padding([.bottom, .horizontal], 15)
         //        .padding(.top, 5)
     }
