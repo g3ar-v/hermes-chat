@@ -240,40 +240,44 @@ struct InputBarView: View {
                 
                 Group {
                     
-                    // Mode toggle — Stateless / Memory
-                    //                    HStack(spacing: 4) {
-                    //                        ForEach(ChatMode.allCases) { mode in
-                    //                            Button {
-                    //                                viewModel.chatMode = mode
-                    //                            } label: {
-                    //                                HStack(spacing: 4) {
-                    //                                    Image(systemName: mode.icon)
-                    //                                        .font(.system(size: 10, weight: .semibold))
-                    //                                    Text(mode.rawValue)
-                    //                                        .font(.system(size: 11, weight: .medium))
-                    //                                }
-                    //                                .padding(.horizontal, 8)
-                    //                                .padding(.vertical, 4)
-                    //                                .background(
-                    //                                    viewModel.chatMode == mode
-                    //                                    ? Color.accentColor.opacity(0.2)
-                    //                                    : Color.clear
-                    //                                )
-                    //                                .foregroundColor(
-                    //                                    viewModel.chatMode == mode ? .accentColor : .secondary
-                    //                                )
-                    //                                .clipShape(Capsule())
-                    //                            }
-                    //                            .buttonStyle(.plain)
-                    //                        }
-                    //                    }
+                    // Settings menu button (first item in toolbar)
+                    Menu {
+                        Section("Mode") {
+                            Button {
+                                viewModel.chatMode = .stateless
+                            } label: {
+                                Label("Stateless", systemImage: ChatMode.stateless.icon)
+                            }
+                            Button {
+                                viewModel.chatMode = .memory
+                            } label: {
+                                Label("Memory", systemImage: ChatMode.memory.icon)
+                            }
+                        }
+                        Divider()
+                        Button {
+                            // TODO: open settings
+                        } label: {
+                            Label("Settings...", systemImage: "gearshape")
+                        }
+                        Divider()
+                        Button {
+                            NSApplication.shared.terminate(nil)
+                        } label: {
+                            Label("Quit", systemImage: "power")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                    }
+                    .buttonStyle(.highlightOnHover)
                     
-                    // Mode indicator
+                    // Mode status label (shown separately)
                     Label(chatMode.rawValue, systemImage: chatMode.icon)
-                        .foregroundStyle(.gray.opacity(0.5))
-                        .font(.footnote)
+                        .font(.caption2)
                         .fontWeight(.semibold)
-                        .labelStyle(SpacedLabelStyle(spacing: 5))
+                        .foregroundStyle(.secondary.opacity(0.6))
                     
                     // Model label
                     if let model = viewModel.modelLabel {
