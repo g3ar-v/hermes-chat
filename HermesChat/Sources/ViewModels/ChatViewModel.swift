@@ -303,6 +303,13 @@ public final class ChatViewModel: ObservableObject {
         refreshCurrentStatus()
     }
 
+    public func dismissError() {
+        if case .error = loadingState {
+            loadingState = .idle
+            refreshCurrentStatus()
+        }
+    }
+
     // MARK: - Helpers
 
     private func refreshCurrentStatus() {

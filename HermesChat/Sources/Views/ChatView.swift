@@ -19,7 +19,7 @@ struct ChatView: View {
             // Divider()
             InputBarView(
                 text: $inputText,
-                isLoading: viewModel.loadingState.isLoading,
+                loadingState: viewModel.loadingState,
                 chatMode: viewModel.chatMode
             ) { prompt in
                 Task { await viewModel.send(prompt) }
@@ -190,9 +190,11 @@ struct ChatView: View {
 
 struct InputBarView: View {
     @Binding var text: String
-    let isLoading: Bool
+    let loadingState: LoadingState
     let chatMode: ChatMode
     let onSubmit: (String) -> Void
+
+    private var isLoading: Bool { loadingState.isLoading }
     
     @AppStorage("isPinned") private var isPinned = false
     @EnvironmentObject private var viewModel: ChatViewModel
@@ -296,8 +298,14 @@ struct InputBarView: View {
                 //                        .fill(viewModel.isConnected ? Color.green : Color.orange)
                 //                        .frame(width: 7, height: 7)
                 //                }
-                // Status indicator
-                if let status = viewModel.currentStatus {
+                // Animated status indicators
+                if case .error(let msg) = loadingState {
+                    ErrorIndicator(message: msg) {
+                        viewModel.dismissError()
+                    }
+                } else if isLoading {
+                    ProcessingIndicator()
+                } else if let status = viewModel.currentStatus {
                     Text(status)
                         .font(.caption)
                         .foregroundColor(.secondary.opacity(0.7))
