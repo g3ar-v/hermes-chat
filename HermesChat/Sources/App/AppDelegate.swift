@@ -84,7 +84,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             button.action = #selector(togglePanel)
             button.sendAction(on: [.leftMouseDown, .rightMouseUp])
         }
-        print("Menu bar set up")
     }
 
     @objc private func togglePanel() {
@@ -133,6 +132,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func registerGlobalHotkey() {
         KeyboardShortcuts.onKeyUp(for: .togglePanel) { [weak self] in
             self?.togglePanel()
+        }
+
+        KeyboardShortcuts.onKeyUp(for: .toggleMode) {
+            NotificationCenter.default.post(name: .hermesToggleChatMode, object: nil)
+        }
+
+        KeyboardShortcuts.onKeyUp(for: .newChat) {
+            NotificationCenter.default.post(name: .hermesNewChat, object: nil)
         }
     }
 }
