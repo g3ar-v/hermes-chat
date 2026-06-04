@@ -298,7 +298,7 @@ struct InputBarView: View {
                         }
                     } label: {
                         Image(systemName: "slider.horizontal.3")
-                            .font(.title2)
+                            .font(.body)
                             .fontWeight(.semibold)
                     }
                     .buttonStyle(.highlightOnHover)
