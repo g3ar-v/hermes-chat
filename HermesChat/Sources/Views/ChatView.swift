@@ -252,7 +252,7 @@ struct InputBarView: View {
                     .textFieldStyle(.plain)
                     .focused($isFocused)
                     .lineLimit(4)
-                    .frame(minHeight: 50, alignment: .center)
+                    .frame(minHeight: 34, alignment: .center)
                     .onSubmit {
                         self.submit()
                         isFocused = false
