@@ -50,7 +50,7 @@ struct ChatView: View {
             // Message list appears when there are messages or streaming content
             if !viewModel.messages.isEmpty || !viewModel.liveContent.isEmpty {
                 conversationContent
-                    .frame(maxWidth: 820)
+                    .frame(maxWidth: 720)
                     .padding(.horizontal, 15)
             }
         }
