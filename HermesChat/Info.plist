@@ -29,6 +29,6 @@
     <key>NSMainStoryboardFile</key>
     <string></string>
     <key>LSUIElement</key>
-    <false/>
+    <true/>
 </dict>
 </plist>
