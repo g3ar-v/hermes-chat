@@ -63,7 +63,7 @@ public final class ChatViewModel: ObservableObject {
         // In stateless mode, we don't need the gateway at all
         if chatMode == .stateless {
             chatProfile = profileName
-            modelLabel = "\(LocalChatService.model) @ local"
+            modelLabel = "\(LocalChatService.model)"
             statusText = "Standby"
             isConnected = true
             currentSessionId = nil
@@ -351,7 +351,7 @@ public final class ChatViewModel: ObservableObject {
 
     // MARK: - Helpers
 
-    private func resetConversation() {
+    public func resetConversation() {
         messages = []
         liveContent = ""
         liveThinking = nil
@@ -361,7 +361,7 @@ public final class ChatViewModel: ObservableObject {
         isGenerating = false
 
         if chatMode == .stateless {
-            modelLabel = "\(LocalChatService.model) @ local"
+            modelLabel = "\(LocalChatService.model)"
             isConnected = true
             currentSessionId = nil
             statusText = "Standby"

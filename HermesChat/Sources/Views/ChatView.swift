@@ -4,54 +4,83 @@ import SwiftUI
 // MARK: - Chat View (Root)
 
 struct ChatView: View {
-    
+
     @StateObject private var viewModel = ChatViewModel()
-    @State private var inputText: String = ""
     @State private var conversationSize: CGSize = CGSize(width: 0, height: 100)
     @FocusState private var isInputFocused: Bool
-    
-    
+    @State private var cardIndex: Int = 0 {
+        didSet {
+            viewModel.chatMode = cardIndex == 0 ? .stateless : .memory
+        }
+    }
+    @State private var localInputText: String = ""
+    @State private var memoryInputText: String = ""
+
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             // Top toolbar
             // toolbar
-            
+
             // Divider()
-            InputBarView(
-                text: $inputText,
-                loadingState: viewModel.loadingState,
-                chatMode: viewModel.chatMode
-            ) { prompt in
-                Task { await viewModel.send(prompt) }
-            }
+            // CardStack wrapping stateless and memory input bars
+            CardStack(
+                [
+                    AnyView(
+                        InputBarView(
+                            text: $localInputText,
+                            loadingState: viewModel.loadingState,
+                            chatMode: .stateless,
+                            showProfile: false
+                        ) { prompt in
+                            Task { await viewModel.send(prompt) }
+                        }),
+                    AnyView(
+                        InputBarView(
+                            text: $memoryInputText,
+                            loadingState: viewModel.loadingState,
+                            chatMode: .memory,
+                            showProfile: true
+                        ) { prompt in
+                            Task { await viewModel.send(prompt) }
+                        }),
+                ], selectedIndex: $cardIndex
+            )
             .frame(maxWidth: 720)
-            .padding(.horizontal, 15)
-            
+
             // Message list appears when there are messages or streaming content
             if !viewModel.messages.isEmpty || !viewModel.liveContent.isEmpty {
                 conversationContent
-                    .frame(maxWidth: 720)
+                    .frame(maxWidth: 820)
                     .padding(.horizontal, 15)
             }
         }
         .environmentObject(viewModel)
-        
+
         .task {
-#if DEBUG
-            if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" {
+            #if DEBUG
+                if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1" {
+                    await viewModel.connect()
+                } else {
+                    viewModel.statusText = "Preview mode"
+                }
+            #else
                 await viewModel.connect()
-            } else {
-                viewModel.statusText = "Preview mode"
-            }
-#else
-            await viewModel.connect()
-#endif
+            #endif
         }
         .environmentObject(viewModel)
+
+        .onReceive(NotificationCenter.default.publisher(for: .hermesToggleChatMode)) { _ in
+            withAnimation(.easeInOut(duration: 0.3)) {
+                cardIndex = cardIndex == 0 ? 1 : 0
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .hermesNewChat)) { _ in
+            viewModel.resetConversation()
+        }
     }
-    
+
     // MARK: - Conversation Content
-    
+
     private var conversationContent: some View {
         ScrollViewReader { proxy in
             ScrollView {
@@ -106,11 +135,11 @@ struct ChatView: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
-    
+
     @Environment(\.colorScheme) private var colorScheme
-    
+
     // MARK: - Toolbar
-    
+
     private var toolbar: some View {
         HStack(spacing: 0) {
             // Sidebar toggle placeholder (no sidebar, but preserves the icon)
@@ -122,9 +151,9 @@ struct ChatView: View {
             }
             .buttonStyle(HighlightButtonStyle())
             .help("Sidebar")
-            
+
             Spacer()
-            
+
             // Mode toggle — Stateless / Memory
             HStack(spacing: 4) {
                 ForEach(ChatMode.allCases) { mode in
@@ -141,8 +170,8 @@ struct ChatView: View {
                         .padding(.vertical, 4)
                         .background(
                             viewModel.chatMode == mode
-                            ? Color.accentColor.opacity(0.2)
-                            : Color.clear
+                                ? Color.accentColor.opacity(0.2)
+                                : Color.clear
                         )
                         .foregroundColor(
                             viewModel.chatMode == mode ? .accentColor : .secondary
@@ -152,9 +181,9 @@ struct ChatView: View {
                     .buttonStyle(.plain)
                 }
             }
-            
+
             Spacer()
-            
+
             // Connection status
             HStack(spacing: 5) {
                 Circle()
@@ -164,7 +193,7 @@ struct ChatView: View {
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
             }
-            
+
             // Stop button
             if viewModel.loadingState.isLoading {
                 Button {
@@ -183,7 +212,7 @@ struct ChatView: View {
         .fontWeight(.semibold)
         .background(Color(nsColor: .windowBackgroundColor).opacity(0.3))
     }
-    
+
 }
 
 // MARK: - Input Bar
@@ -192,54 +221,55 @@ struct InputBarView: View {
     @Binding var text: String
     let loadingState: LoadingState
     let chatMode: ChatMode
+    let showProfile: Bool
     let onSubmit: (String) -> Void
 
     private var isLoading: Bool { loadingState.isLoading }
-    
+
     @AppStorage("isPinned") private var isPinned = false
     @EnvironmentObject private var viewModel: ChatViewModel
     @FocusState private var isFocused: Bool
-    
+
     var body: some View {
         VStack(alignment: .leading) {
-            HStack() {
+            HStack {
                 Spacer()
-                      Button {
-                          isPinned.toggle()
-                      } label: {
-                          Image(systemName: isPinned ? "pin.fill" : "pin")
-                              .font(.caption2)
-                              .foregroundColor(isPinned ? .accentColor : .secondary.opacity(0.5))
-                      }
-                      .buttonStyle(.plain)
-                      .help(isPinned ? "Unpin panel" : "Pin panel")
-                      .padding(.top, 2)
+                Button {
+                    isPinned.toggle()
+                } label: {
+                    Image(systemName: isPinned ? "pin.fill" : "pin")
+                        .font(.caption2)
+                        .foregroundColor(isPinned ? .accentColor : .secondary.opacity(0.5))
+                }
+                .buttonStyle(.plain)
+                .help(isPinned ? "Unpin panel" : "Pin panel")
+                .padding(.top, 2)
             }
             HStack(alignment: .center, spacing: 2) {
-                
+
                 TextField("Ask Hermes...", text: $text, axis: .vertical)
                     .font(.title3)
                     .textFieldStyle(.plain)
                     .focused($isFocused)
                     .lineLimit(4)
-                    .frame(minHeight: 50, alignment: .center)
+                    .frame(minHeight: 34, alignment: .center)
                     .onSubmit {
                         self.submit()
                         isFocused = false
                         //                        let temp_text = text
                         //                        text = ""
                         //                        text = temp_text
-                        
+
                     }
-                
+
             }
             // .padding(2)
             //            .frame(height: 50)
-            
+
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                
+
                 Group {
-                    
+
                     // Settings menu button (first item in toolbar)
                     Menu {
                         Section("Mode") {
@@ -267,18 +297,18 @@ struct InputBarView: View {
                             Label("Quit", systemImage: "power")
                         }
                     } label: {
-                        Image(systemName: "ellipsis.circle")
-                            .font(.title3)
+                        Image(systemName: "slider.horizontal.3")
+                            .font(.body)
                             .fontWeight(.semibold)
                     }
                     .buttonStyle(.highlightOnHover)
-                    
+
                     // Mode status label (shown separately)
                     Label(chatMode.rawValue, systemImage: chatMode.icon)
                         .font(.caption2)
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary.opacity(0.6))
-                    
+
                     // Model label
                     if let model = viewModel.modelLabel {
                         Text(model)
@@ -286,16 +316,16 @@ struct InputBarView: View {
                             .foregroundColor(.secondary.opacity(0.6))
                             .lineLimit(1)
                     }
-                    
-                    if let profile = viewModel.chatProfile {
+
+                    if showProfile, let profile = viewModel.chatProfile {
                         Text(profile)
                             .font(.caption2)
                     }
-                    
+
                 }
-                
+
                 Spacer()
-                
+
                 // Connection status
                 //                HStack(spacing: 5) {
                 //                    Circle()
@@ -315,26 +345,26 @@ struct InputBarView: View {
                         .foregroundColor(.secondary.opacity(0.7))
                         .lineLimit(1)
                 }
-                
+
             }.frame(maxWidth: .infinity, alignment: .leading)
-            
+
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 3)
-        .padding(.bottom, 7)
+        //        .padding(.bottom, 7)
         .padding(.horizontal)
         //                .padding(.vertical, 7)
         .background(.thickMaterial)
         .overlay {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .stroke(.secondary.opacity(0.5), lineWidth: 1.0)
-            
+
         }
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         //        .padding([.bottom, .horizontal], 15)
         //        .padding(.top, 5)
     }
-    
+
     private func submit() {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }

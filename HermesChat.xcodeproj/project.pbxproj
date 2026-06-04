@@ -10,6 +10,7 @@
 		0AABF9EA43DCF654894B738A /* HonchoMemoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507708D0FEACC5F6A00703E7 /* HonchoMemoryService.swift */; };
 		2F2376B2E95901A7AE675BD5 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F0CEA489DA19ABF10A8AD4 /* ProfileService.swift */; };
 		357271A0E25B3CBAB6800FF0 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91991442CB173A7D71D08EC9 /* ChatView.swift */; };
+		3949B392FF02CBEE75313D87 /* CardStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E7BFC23DE632728DA75A8F /* CardStack.swift */; };
 		39A24CA696665C56B916B051 /* AnimatedIndicators.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D1A8AF30B994EAFE6D3B48 /* AnimatedIndicators.swift */; };
 		3F4E229307A2B92DC8FBB98F /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AAEBB2CE9EF82EF7DDC0A2E /* ChatViewModel.swift */; };
 		4EB62284843D89E19FC4384E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4BB8F709EE563D1517404C4 /* Assets.xcassets */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		0172F632A94FF339AC01BCC1 /* KeyboardShortcuts+Definitions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardShortcuts+Definitions.swift"; sourceTree = "<group>"; };
+		05E7BFC23DE632728DA75A8F /* CardStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStack.swift; sourceTree = "<group>"; };
 		23245B6E8F2A9A7A394852E9 /* HermesChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HermesChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32ECAC97F40C6602DD5CA3DD /* LocalChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalChatService.swift; sourceTree = "<group>"; };
 		44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentStyles.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				C6D1A8AF30B994EAFE6D3B48 /* AnimatedIndicators.swift */,
+				05E7BFC23DE632728DA75A8F /* CardStack.swift */,
 				91991442CB173A7D71D08EC9 /* ChatView.swift */,
 				44195DCAEF676AAEBC88A68A /* ComponentStyles.swift */,
 				D2D3C5243E881ACC65D819B3 /* HermesChatButtonStyle.swift */,
@@ -234,6 +237,7 @@
 			files = (
 				39A24CA696665C56B916B051 /* AnimatedIndicators.swift in Sources */,
 				BAB69188C7FB61C18A05A584 /* AppDelegate.swift in Sources */,
+				3949B392FF02CBEE75313D87 /* CardStack.swift in Sources */,
 				FA16F28BE545C6D9C39CDB5F /* ChatMessage.swift in Sources */,
 				357271A0E25B3CBAB6800FF0 /* ChatView.swift in Sources */,
 				3F4E229307A2B92DC8FBB98F /* ChatViewModel.swift in Sources */,
