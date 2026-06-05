@@ -51,7 +51,6 @@ struct ChatView: View {
             if !viewModel.messages.isEmpty || !viewModel.liveContent.isEmpty {
                 conversationContent
                     .frame(maxWidth: 720)
-                    .padding(.horizontal, 15)
             }
         }
         .environmentObject(viewModel)
@@ -126,7 +125,6 @@ struct ChatView: View {
             //            }
         }
         .frame(height: conversationSize.height)
-        .contentMargins(.horizontal, 10, for: .scrollContent)
         //        .scrollIndicators(.hidden)
         .background(.ultraThickMaterial)
         .overlay {
